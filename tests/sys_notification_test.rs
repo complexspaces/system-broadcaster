@@ -1,7 +1,5 @@
 //! A end-to-end test of the system's implementation of notifications.
 
-#[cfg(target_os = "macos")]
-use core_foundation::runloop::{self, CFRunLoop};
 use futures_util::StreamExt;
 use std::time::Duration;
 use system_broadcaster::{Listener, Sender};
@@ -86,11 +84,11 @@ fn main() {
     // we need to independently drive the main thread's runloop for this test.
     #[cfg(target_os = "macos")]
     loop {
-        CFRunLoop::run_in_mode(
+        objc2_core_foundation::CFRunLoop::run_in_mode(
             // SAFETY: This static is always available at runtime, and
             // only the system dereferences the pointer.
-            unsafe { runloop::kCFRunLoopDefaultMode },
-            Duration::from_millis(100),
+            unsafe { objc2_core_foundation::kCFRunLoopDefaultMode },
+            0.001,
             false,
         );
 
